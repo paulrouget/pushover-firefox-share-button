@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <title>Pushover Firefox Share Button</title>
+    <meta charset="utf8">
+    <script>
+      var TOKEN = "auKLqte2XHA3yjRDV8di8FcQyUvT4A"; // get your own: https://pushover.net/apps/build
+      var href = window.location.href;
+      var baseurl = href.substring(0, href.lastIndexOf('/'));
+      var data = {
+        "name": "Pushover Social Service",
+        "iconURL": baseurl + "/ico16.png",
+        "icon32URL": baseurl + "/ico32.png",
+        "icon64URL": baseurl + "/ico64.png",
+        "description": "Share URL via Pushover",
+        "author": "Paul Rouget, Mozilla",
+        "homepageURL": "https://github.com/paulrouget/sharepushover/",
+      }
+
+      function activate() {
+        var userkey = document.querySelector("#userkey").value;
+        if (userkey && userkey.length == "30") {
+          data.shareURL = baseurl + "/share.html#" + userkey;
+          var event = new CustomEvent("ActivateSocialFeature");
+          document.body.setAttribute("data-service", JSON.stringify(data));
+          document.body.dispatchEvent(event);
+        } else {
+          alert("invalid user key");
+        }
+      }
+
+      function share() {
+        var userkey = window.location.hash.substr(1);
+        var xhr = new XMLHttpRequest();
+        xhr.open("post", "https://api.pushover.net/1/messages", true);
+        var data = new FormData();
+        data.append("token", TOKEN);
+        data.append("user", userkey);
+        data.append("message", document.querySelector("#message").value);
+        xhr.onerro = xhr.onload = function() {
+          window.close();
+        }
+        xhr.send(data);
+      }
+
+      window.addEventListener("OpenGraphData", function(e) {
+        var shareData = JSON.parse(e.detail);
+        var input = document.querySelector("#message");
+        if (shareData.title) {
+          input.value = shareData.title + ": ";
+        }
+        input.value += shareData.url;
+      });
+
+      window.addEventListener("load", function() {
+        if (window.location.hash) {
+          document.querySelector("#share").classList.add("enable");
+        } else {
+          document.querySelector("#register").classList.add("enable");
+        }
+      });
+    </script>
+    <style>
+      #register:not(.enable), #share:not(.enable) {
+        display: none;
+      }
+      body {
+        width: 360px;
+        height: 130px;
+        margin: 0;
+        overflow: hidden;
+      }
+      form > * {
+        display: block;
+      }
+      #share {
+        width: 100%;
+      }
+      #share > input {
+        height: 30px;
+        float: right;
+        background-image: linear-gradient(#08C, #04C);
+        background-repeat: repeat-x;
+        border: 1px solid rgba(0, 0, 0, 0.1);
+        border-radius: 4px;
+        box-shadow: rgba(255, 255, 255, 0.2) 0px 1px 0px 0px inset, rgba(0, 0, 0, 0.05) 0px 1px 2px 0px;
+        color: #FFF;
+        margin-right: 4px;
+        padding: 4px;
+        text-shadow: rgba(0, 0, 0, 0.25) 0px -1px 0px;
+        width: 125px;
+      }
+      textarea {
+        width: 350px;
+        height: 100px;
+      }
+    </style>
+  </head>
+  <body>
+    <form onsubmit="activate(); return false;" id="register">
+      <input required minlength="30" type="text" id="userkey" placeholder="Your user key">
+      <a href="https://pushover.net/dashboard" target="_">Where to find my user key?</a>
+      <input type="submit" value="Activate Pushover sharing via Firefox share button">
+    </form>
+    <form onsubmit="share(); return false;" id="share">
+      <textarea id="message"></textarea>
+      <input type="submit" value="share">
+    </form>
+  </body>
+</html>
