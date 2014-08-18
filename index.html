@@ -21,7 +21,7 @@
       function activate() {
         var userkey = document.querySelector("#userkey").value;
         if (userkey && userkey.length == "30") {
-          data.shareURL = baseurl + "/share.html#" + userkey;
+          data.shareURL = baseurl + "/index.html#" + userkey;
           var event = new CustomEvent("ActivateSocialFeature");
           document.body.setAttribute("data-service", JSON.stringify(data));
           document.body.dispatchEvent(event);
@@ -62,6 +62,7 @@
       });
     </script>
     <style>
+
       #register:not(.enable), #share:not(.enable) {
         display: none;
       }
@@ -71,7 +72,13 @@
         margin: 0;
         overflow: hidden;
       }
-      form > * {
+      #register {
+        padding: 30px;
+      }
+      #register > a {
+        font-size: 70%;
+      }
+      #share > * {
         display: block;
       }
       #share {
@@ -100,8 +107,8 @@
   <body>
     <form onsubmit="activate(); return false;" id="register">
       <input required minlength="30" type="text" id="userkey" placeholder="Your user key">
-      <a href="https://pushover.net/dashboard" target="_">Where to find my user key?</a>
       <input type="submit" value="Activate Pushover sharing via Firefox share button">
+      <a href="https://pushover.net/dashboard" target="_">(Where to find my user key?)</a>
     </form>
     <form onsubmit="share(); return false;" id="share">
       <textarea id="message"></textarea>
