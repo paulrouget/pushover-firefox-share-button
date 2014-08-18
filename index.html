@@ -38,10 +38,8 @@
         data.append("token", TOKEN);
         data.append("user", userkey);
         data.append("message", document.querySelector("#message").value);
-        xhr.onerro = xhr.onload = function() {
-          window.close();
-        }
         xhr.send(data);
+        window.close();
       }
 
       window.addEventListener("OpenGraphData", function(e) {
