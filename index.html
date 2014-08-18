@@ -60,7 +60,8 @@
       });
     </script>
     <style>
-
+      @import url(http://fonts.googleapis.com/css?family=Quattrocento+Sans&subset=latin,latin-ext);
+      html { font-family: 'Quattrocento Sans', sans-serif; }
       #register:not(.enable), #share:not(.enable) {
         display: none;
       }
@@ -104,8 +105,11 @@
   </head>
   <body>
     <form onsubmit="activate(); return false;" id="register">
+      <p>
+        Enable <a href="http://pushover.net/">Pushover</a> sharing via Firefox "Share" button:
+      </p>
       <input required minlength="30" type="text" id="userkey" placeholder="Your user key">
-      <input type="submit" value="Activate Pushover sharing via Firefox share button">
+      <input type="submit" value="activate">
       <a href="https://pushover.net/dashboard" target="_">(Where to find my user key?)</a>
     </form>
     <form onsubmit="share(); return false;" id="share">
